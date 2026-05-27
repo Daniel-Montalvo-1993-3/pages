@@ -196,6 +196,7 @@ export const FormCard: React.FC<FormCardProps> = ({
                 ${inputBorderColor}
                 ${inputTextColor}
                 ${inputPlaceholderColor}
+                ${inputBackgroundColor}
               `}
               aria-label={placeholder}
             />

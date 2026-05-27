@@ -22,7 +22,7 @@ export const formConfigs: FormCardConfigRecord = {
     descriptionColor: 'text-gray-200',
     inputTextColor: 'text-white',
     inputPlaceholderColor: 'placeholder-gray-400',
-    inputBackgroundColor: 'bg-white/10',
+    inputBackgroundColor: 'bg-transparent',
     inputBorderColor: 'border-white/30',
     buttonColor: 'bg-white hover:bg-gray-100',
     buttonTextColor: 'text-gray-900',

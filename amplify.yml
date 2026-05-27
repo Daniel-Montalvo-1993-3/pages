@@ -1,0 +1,35 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        # Usar la versión de Node definida en el entorno o una específica
+        - nvm use 20
+        - npm ci
+    build:
+      commands:
+        # Validar estilo y errores antes de compilar
+        - npm run lint
+        - npm run build
+  artifacts:
+    baseDirectory: dist
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - ~/.npm/**/*
+
+test:
+  phases:
+    preTest:
+      commands:
+        - npm ci
+    test:
+      commands:
+        # Ejecuta tests y genera reportes si es necesario
+        - npm run test:run
+  artifacts:
+    baseDirectory: coverage
+    files:
+      - '**/*'
