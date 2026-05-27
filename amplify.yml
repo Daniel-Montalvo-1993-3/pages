@@ -27,4 +27,10 @@ test:
         - npm ci
     test:
       commands:
+        # Ejecuta tests y genera reportes si es necesario
         - npm run test:run
+        - mkdir -p coverage
+  artifacts:
+    baseDirectory: coverage
+    files:
+      - '**/*'
