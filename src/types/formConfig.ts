@@ -23,6 +23,14 @@ export interface FormCardConfig {
   onButtonClick?: (value: string) => void;
   /** Tipo de input */
   inputType?: 'text' | 'email' | 'tel' | 'number';
+  /** URL del logo (se muestra en la parte superior) */
+  logo?: string;
+  /** URL de la ilustración (se muestra antes del título) */
+  illustration?: string;
+  /** Color principal de Vanta en formato hexadecimal (ej: 0xa855f7) */
+  vantaColor?: number;
+  /** Color de fondo de Vanta en formato hexadecimal (ej: 0x1e1b4b) */
+  vantaBackgroundColor?: number;
 }
 
 /**

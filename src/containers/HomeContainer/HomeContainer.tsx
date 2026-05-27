@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FormCard } from '../../components/FormCard/FormCard';
 import { Modal } from '../../components/Modal/Modal';
+import { VantaBackground } from '../../components/VantaBackground/VantaBackground';
 import { useModal } from '../../hooks/useModal';
 import { formConfigs } from './formConfigs';
 
@@ -28,25 +29,43 @@ export const HomeContainer: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-2xl mx-auto space-y-8">
-        <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">
-          Formulario {num}
-        </h1>
+    <>
+      {/* Fondo oscuro base que se muestra antes de que Vanta cargue */}
+      <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 z-0" />
+      
+      {/* Fondo animado con Vanta.js Topology */}
+      <VantaBackground 
+        color={config.vantaColor || 0xa855f7}
+        backgroundColor={config.vantaBackgroundColor || 0x1e1b4b}
+        scale={1.0}
+        mouseControls={true}
+        touchControls={true}
+      />
+      
+      {/* Contenido principal con z-index superior para estar sobre Vanta */}
+      <div className="relative min-h-screen p-8 z-10">
+        <div className="max-w-2xl mx-auto space-y-8">
+          <h1 className="text-4xl font-bold text-center text-white mb-8 drop-shadow-lg animate-in fade-in-up duration-500">
+            Formulario {num}
+          </h1>
 
-        {/* Renderizar FormCard con la configuración seleccionada */}
-        <FormCard
-          backgroundImage={config.backgroundImage}
-          backgroundColor={config.backgroundColor}
-          backgroundGradient={config.backgroundGradient}
-          title={config.title}
-          description={config.description}
-          placeholder={config.placeholder}
-          maxLength={config.maxLength}
-          buttonText={config.buttonText}
-          inputType={config.inputType}
-          onButtonClick={handleFormSubmit}
-        />
+        {/* Renderizar FormCard con la configuración seleccionada - key para forzar re-render en cambio de página */}
+        <div key={num} className="animate-in fade-in-up duration-700">
+          <FormCard
+            backgroundImage={config.backgroundImage}
+            backgroundColor={config.backgroundColor}
+            backgroundGradient={config.backgroundGradient}
+            title={config.title}
+            description={config.description}
+            placeholder={config.placeholder}
+            maxLength={config.maxLength}
+            buttonText={config.buttonText}
+            inputType={config.inputType}
+            logo={config.logo}
+            illustration={config.illustration}
+            onButtonClick={handleFormSubmit}
+          />
+        </div>
 
         {/* Modal de confirmación */}
         <Modal isOpen={isOpen} onClose={close} title="¡Éxito!">
@@ -64,5 +83,6 @@ export const HomeContainer: React.FC = () => {
         </Modal>
       </div>
     </div>
+    </>
   );
 };

@@ -4,6 +4,11 @@ import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { HomeContainer } from './HomeContainer';
 
+// Mock del componente VantaBackground
+vi.mock('../../components/VantaBackground/VantaBackground', () => ({
+  VantaBackground: () => <div data-testid="vanta-background" />,
+}));
+
 describe('HomeContainer', () => {
   const renderHomeContainer = (initialUrl = '/pages/home?num=1') => {
     window.history.pushState({}, '', initialUrl);

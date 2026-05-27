@@ -21,6 +21,10 @@ interface FormCardProps {
   onButtonClick?: (value: string) => void;
   /** Tipo de input */
   inputType?: 'text' | 'email' | 'tel' | 'number';
+  /** URL del logo (se muestra en la parte superior) */
+  logo?: string;
+  /** URL de la ilustración (se muestra antes del título) */
+  illustration?: string;
 }
 
 export const FormCard: React.FC<FormCardProps> = ({
@@ -34,6 +38,8 @@ export const FormCard: React.FC<FormCardProps> = ({
   buttonText = 'Enviar',
   onButtonClick,
   inputType = 'text',
+  logo,
+  illustration,
 }) => {
   const [inputValue, setInputValue] = useState('');
 
@@ -77,11 +83,35 @@ export const FormCard: React.FC<FormCardProps> = ({
       )}
 
       <div className="relative z-10 max-w-md mx-auto w-full">
+        {/* Logo */}
+        {logo && (
+          <div className="mb-6 flex justify-center">
+            <img 
+              src={logo} 
+              alt="Logo" 
+              className="h-8 md:h-10 object-contain"
+              loading="lazy"
+            />
+          </div>
+        )}
+
+        {/* Ilustración */}
+        {illustration && (
+          <div className="mb-6 flex justify-center">
+            <img 
+              src={illustration} 
+              alt="Illustration" 
+              className="h-32 md:h-40 object-contain"
+              loading="lazy"
+            />
+          </div>
+        )}
+
         {/* Título */}
         {title && (
           <h2
             className={`
-              text-3xl font-bold mb-4
+              text-3xl font-bold mb-4 text-center
               ${backgroundImage ? 'text-white' : 'text-gray-900'}
             `}
           >
@@ -93,7 +123,7 @@ export const FormCard: React.FC<FormCardProps> = ({
         {description && (
           <p
             className={`
-              text-lg mb-6
+              text-lg mb-6 text-center
               ${backgroundImage ? 'text-gray-100' : 'text-gray-600'}
             `}
           >

@@ -72,4 +72,48 @@ describe('FormCard', () => {
     
     expect(input.value).toHaveLength(5);
   });
+
+  it('debe renderizar logo cuando se proporciona', () => {
+    render(<FormCard logo="https://example.com/logo.png" />);
+    
+    const logo = screen.getByAltText('Logo');
+    expect(logo).toBeInTheDocument();
+    expect(logo).toHaveAttribute('src', 'https://example.com/logo.png');
+    expect(logo).toHaveClass('h-8', 'md:h-10', 'object-contain');
+  });
+
+  it('debe renderizar ilustración cuando se proporciona', () => {
+    render(<FormCard illustration="https://example.com/illustration.svg" />);
+    
+    const illustration = screen.getByAltText('Illustration');
+    expect(illustration).toBeInTheDocument();
+    expect(illustration).toHaveAttribute('src', 'https://example.com/illustration.svg');
+    expect(illustration).toHaveClass('h-32', 'md:h-40', 'object-contain');
+  });
+
+  it('no debe renderizar logo cuando no se proporciona', () => {
+    render(<FormCard />);
+    
+    const logo = screen.queryByAltText('Logo');
+    expect(logo).not.toBeInTheDocument();
+  });
+
+  it('no debe renderizar ilustración cuando no se proporciona', () => {
+    render(<FormCard />);
+    
+    const illustration = screen.queryByAltText('Illustration');
+    expect(illustration).not.toBeInTheDocument();
+  });
+
+  it('debe renderizar logo e ilustración juntos cuando ambos se proporcionan', () => {
+    render(
+      <FormCard 
+        logo="https://example.com/logo.png"
+        illustration="https://example.com/illustration.svg"
+      />
+    );
+    
+    expect(screen.getByAltText('Logo')).toBeInTheDocument();
+    expect(screen.getByAltText('Illustration')).toBeInTheDocument();
+  });
 });
