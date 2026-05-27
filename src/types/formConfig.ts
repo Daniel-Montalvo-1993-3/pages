@@ -49,6 +49,8 @@ export interface FormCardConfig {
   buttonTextColor?: string;
   /** Color del contador de caracteres (clases de Tailwind) */
   counterColor?: string;
+  /** Color del ícono del micrófono (clases de Tailwind) */
+  micColor?: string;
 }
 
 /**

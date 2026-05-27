@@ -26,6 +26,7 @@ export const formConfigs: FormCardConfigRecord = {
     inputBorderColor: 'border-white/30',
     buttonColor: 'bg-white hover:bg-gray-100',
     buttonTextColor: 'text-gray-900',
+    micColor: "text-white",
     counterColor: 'text-gray-300',
   },
   '2': {
@@ -48,6 +49,7 @@ export const formConfigs: FormCardConfigRecord = {
     inputBorderColor: 'border-white/40',
     buttonColor: 'bg-[#440090]',
     buttonTextColor: 'text-white',
+    micColor: "text-black",
     counterColor: 'text-gray-800',
   },
   '3': {
@@ -69,6 +71,7 @@ export const formConfigs: FormCardConfigRecord = {
     inputBorderColor: 'border-yellow-500',
     buttonColor: 'bg-[#ff9a00]',
     buttonTextColor: 'text-white',
+    micColor: "text-black",
     counterColor: 'text-gray-600',
   },
   'default': {
@@ -89,6 +92,7 @@ export const formConfigs: FormCardConfigRecord = {
     inputBorderColor: 'border-white/40',
     buttonColor: 'bg-white hover:bg-gray-100',
     buttonTextColor: 'text-gray-900',
+    micColor: "text-black",
     counterColor: 'text-gray-400',
   },
 };

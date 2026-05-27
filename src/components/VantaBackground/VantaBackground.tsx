@@ -44,54 +44,51 @@ export const VantaBackground: React.FC<VantaBackgroundProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Verificar que Vanta esté disponible
-    if (!window.VANTA || !window.VANTA.TOPOLOGY) {
-      console.error('[VantaBackground] Vanta.js no está disponible. Asegúrate de que los scripts CDN estén cargados en index.html');
-      return;
-    }
+    let retryTimeout: ReturnType<typeof setTimeout>;
 
-    // Verificar que el elemento ref esté disponible
-    if (!vantaRef.current) {
-      console.error('[VantaBackground] El elemento ref no está disponible');
-      return;
-    }
+    const initVanta = () => {
+      // CDN con defer puede no estar listo aún — reintentar hasta que cargue
+      if (!window.VANTA?.TOPOLOGY) {
+        retryTimeout = setTimeout(initVanta, 100);
+        return;
+      }
 
-    // Inicializar el efecto Vanta
-    try {
-      vantaEffect.current = window.VANTA.TOPOLOGY({
-        el: vantaRef.current,
-        color,
-        backgroundColor,
-        scale,
-        scaleMobile,
-        mouseControls,
-        touchControls,
-        gyroControls,
-      });
+      if (!vantaRef.current) return;
 
-      console.log('[VantaBackground] Efecto Vanta inicializado correctamente');
-      
-      // Mostrar Vanta con transición suave después de un breve delay
-      setTimeout(() => setIsLoaded(true), 100);
-    } catch (error) {
-      console.error('[VantaBackground] Error al inicializar Vanta:', error);
-    }
+      try {
+        vantaEffect.current = window.VANTA.TOPOLOGY({
+          el: vantaRef.current,
+          color,
+          backgroundColor,
+          scale,
+          scaleMobile,
+          mouseControls,
+          touchControls,
+          gyroControls,
+        });
+        setTimeout(() => setIsLoaded(true), 50);
+      } catch (error) {
+        console.error('[VantaBackground] Error al inicializar Vanta:', error);
+      }
+    };
 
-    // Cleanup: destruir el efecto cuando el componente se desmonte
+    initVanta();
+
     return () => {
+      clearTimeout(retryTimeout);
       if (vantaEffect.current) {
         vantaEffect.current.destroy();
-        console.log('[VantaBackground] Efecto Vanta destruido');
+        vantaEffect.current = null;
       }
     };
   }, [color, backgroundColor, scale, scaleMobile, mouseControls, touchControls, gyroControls]);
-{`fixed inset-0 z-0 w-full h-full transition-opacity duration-1000 ${
-        isLoaded ? 'opacity-100' : 'opacity-0'
-      }`}
+
   return (
     <div
       ref={vantaRef}
-      className="fixed inset-0 z-0 w-full h-full"
+      className={`fixed inset-0 z-0 w-full h-full transition-opacity duration-700 ${
+        isLoaded ? 'opacity-100' : 'opacity-0'
+      }`}
       aria-hidden="true"
       role="presentation"
     />

@@ -68,6 +68,7 @@ export const HomeContainer: React.FC = () => {
             buttonColor={config.buttonColor}
             buttonTextColor={config.buttonTextColor}
             counterColor={config.counterColor}
+            micColor={config.micColor}
             onButtonClick={handleFormSubmit}
           />
         </div>

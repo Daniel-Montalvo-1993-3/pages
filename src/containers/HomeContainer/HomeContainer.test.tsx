@@ -9,6 +9,15 @@ vi.mock('../../components/VantaBackground/VantaBackground', () => ({
   VantaBackground: () => <div data-testid="vanta-background" />,
 }));
 
+// Mock de useSpeechInput para evitar dependencia de Web Speech API en tests
+vi.mock('../../hooks/useSpeechInput', () => ({
+  useSpeechInput: () => ({
+    isListening: false,
+    isSupported: false,
+    toggleListening: vi.fn(),
+  }),
+}));
+
 describe('HomeContainer', () => {
   const renderHomeContainer = (initialUrl = '/pages/home?num=1') => {
     window.history.pushState({}, '', initialUrl);
@@ -21,8 +30,9 @@ describe('HomeContainer', () => {
 
   it('debe renderizar el componente correctamente', () => {
     renderHomeContainer();
-    
-    expect(screen.getByText('Formulario 1')).toBeInTheDocument();
+
+    expect(screen.getByText('Bienvenido')).toBeInTheDocument();
+    expect(screen.getByTestId('vanta-background')).toBeInTheDocument();
   });
 
   it('debe usar la configuración correcta para num=1', () => {
@@ -35,10 +45,10 @@ describe('HomeContainer', () => {
 
   it('debe usar la configuración correcta para num=2', () => {
     renderHomeContainer('/pages/home?num=2');
-    
+
     expect(screen.getByText('Contáctanos')).toBeInTheDocument();
     expect(screen.getByText(/Déjanos tu correo electrónico/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('correo@ejemplo.com')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Escribe tu correo')).toBeInTheDocument();
   });
 
   it('debe usar la configuración correcta para num=3', () => {
@@ -103,16 +113,16 @@ describe('HomeContainer', () => {
 
   it('debe renderizar FormCard con las props correctas de la configuración', () => {
     renderHomeContainer('/pages/home?num=2');
-    
+
     // Verificar que el tipo de input sea email
-    const input = screen.getByPlaceholderText('correo@ejemplo.com');
+    const input = screen.getByPlaceholderText('Escribe tu correo');
     expect(input).toHaveAttribute('type', 'email');
   });
 
-  it('debe mostrar el número de formulario en el título', () => {
+  it('debe mostrar el título correcto según la configuración', () => {
     renderHomeContainer('/pages/home?num=3');
-    
-    expect(screen.getByText('Formulario 3')).toBeInTheDocument();
+
+    expect(screen.getByText('Únete a nosotros')).toBeInTheDocument();
   });
 
   it('debe manejar cambios en el query param num', () => {

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { useSpeechInput } from '../../hooks/useSpeechInput';
 
 interface FormCardProps {
   /** Imagen de fondo. Si no se proporciona, se usa el color de fondo */
@@ -43,6 +44,8 @@ interface FormCardProps {
   buttonTextColor?: string;
   /** Color del contador de caracteres (clases de Tailwind) */
   counterColor?: string;
+  /** Color del ícono del micrófono (clases de Tailwind) */
+  micColor?: string;
 }
 
 export const FormCard: React.FC<FormCardProps> = ({
@@ -67,14 +70,26 @@ export const FormCard: React.FC<FormCardProps> = ({
   buttonColor = 'bg-white hover:bg-gray-100',
   buttonTextColor = 'text-gray-900',
   counterColor = 'text-gray-300',
+  micColor = 'text-white/60',
 }) => {
   const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = useCallback((value: string) => {
+    setInputValue(value);
+  }, []);
+
+  const { isListening, isSupported, toggleListening, stopListening } = useSpeechInput({
+    onTranscript: handleInputChange,
+    maxLength,
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (onButtonClick && inputValue.trim()) {
+      if (isListening) stopListening();
       onButtonClick(inputValue);
     }
+    setInputValue('');
   };
 
   const remainingChars = maxLength - inputValue.length;
@@ -174,12 +189,39 @@ export const FormCard: React.FC<FormCardProps> = ({
                 focus:border-white focus:ring-0
                 focus:outline-none
                 transition-all duration-300
+                ${isSupported ? 'pr-8' : ''}
                 ${inputBorderColor}
                 ${inputTextColor}
                 ${inputPlaceholderColor}
               `}
               aria-label={placeholder}
             />
+            {/* Botón de micrófono */}
+            {isSupported && (
+              <button
+                type="button"
+                onClick={toggleListening}
+                aria-label={isListening ? 'Detener dictado' : 'Iniciar dictado por voz'}
+                className={`
+                  absolute left-0 bottom-0
+                  transition-all duration-300
+                  focus:outline-none
+                  ${isListening ? 'text-red-400 animate-pulse scale-110' : `${micColor} hover:scale-110`}
+                `}
+              >
+                {isListening ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <path d="M8.25 4.5a3.75 3.75 0 1 1 7.5 0v8.25a3.75 3.75 0 1 1-7.5 0V4.5Z" />
+                    <path d="M6 10.5a.75.75 0 0 1 .75.75v1.5a5.25 5.25 0 1 0 10.5 0v-1.5a.75.75 0 0 1 1.5 0v1.5a6.751 6.751 0 0 1-6 6.709v2.291h3a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1 0-1.5h3v-2.291a6.751 6.751 0 0 1-6-6.709v-1.5A.75.75 0 0 1 6 10.5Z" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <path d="M8.25 4.5a3.75 3.75 0 1 1 7.5 0v8.25a3.75 3.75 0 1 1-7.5 0V4.5Z" />
+                    <path d="M6 10.5a.75.75 0 0 1 .75.75v1.5a5.25 5.25 0 1 0 10.5 0v-1.5a.75.75 0 0 1 1.5 0v1.5a6.751 6.751 0 0 1-6 6.709v2.291h3a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1 0-1.5h3v-2.291a6.751 6.751 0 0 1-6-6.709v-1.5A.75.75 0 0 1 6 10.5Z" />
+                  </svg>
+                )}
+              </button>
+            )}
             {/* Contador de caracteres */}
             <div className="mt-2 text-xs text-right">
               <span

@@ -8,6 +8,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  optimizeDeps: {
+    include: ['react-speech-recognition'],
+  },
   test: {
     globals: true,
     environment: 'jsdom',

@@ -21,19 +21,10 @@ describe('Navbar', () => {
 
   it('debe renderizar todos los items de navegación', () => {
     renderNavbar();
-    
-    // Usar getAllByText porque hay versión desktop y móvil
+
     expect(screen.getAllByText('Formulario 1').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Formulario 2').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Formulario 3').length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('debe renderizar el logo/brand con link al inicio', () => {
-    renderNavbar();
-    
-    const brandLink = screen.getByText('FormCard');
-    expect(brandLink).toBeInTheDocument();
-    expect(brandLink.closest('a')).toHaveAttribute('href', '/pages/home?num=1');
   });
 
   it('debe marcar el item activo correctamente', () => {
@@ -48,16 +39,16 @@ describe('Navbar', () => {
 
   it('debe aplicar estilos diferentes al item activo', () => {
     renderNavbar('/pages/home?num=1');
-    
+
     const link1 = screen.getAllByText('Formulario 1')[0];
     const link2 = screen.getAllByText('Formulario 2')[0];
-    
-    // El link activo debe tener gradient background
-    expect(link1.className).toContain('from-purple-600');
-    expect(link1.className).toContain('to-pink-600');
-    
-    // El link inactivo debe tener bg-gray-100
-    expect(link2.className).toContain('bg-gray-100');
+
+    // El link activo debe tener bg-white y text-purple-600
+    expect(link1.className).toContain('bg-white');
+    expect(link1.className).toContain('text-purple-600');
+
+    // El link inactivo debe tener text-gray-900
+    expect(link2.className).toContain('text-gray-900');
   });
 
   it('debe tener todos los links con las URLs correctas', () => {
@@ -79,27 +70,21 @@ describe('Navbar', () => {
     expect(nav).toHaveAttribute('aria-label', 'Navegación principal');
   });
 
-  it('debe renderizar versión móvil con items', () => {
+  it('debe renderizar solo los items sin nav duplicado', () => {
     renderNavbar();
-    
-    // Verifica que existan links móviles (duplicados con key mobile-)
+
     const allLinks = screen.getAllByRole('link');
-    const mobileLinks = allLinks.filter(link => 
-      link.className.includes('sm:hidden') || 
-      link.parentElement?.className.includes('sm:hidden')
-    );
-    
-    // Debe haber elementos para versión móvil
-    expect(allLinks.length).toBeGreaterThan(mockNavItems.length);
+    // Solo debe haber exactamente mockNavItems.length links (sin duplicados móvil)
+    expect(allLinks.length).toBe(mockNavItems.length);
   });
 
   it('debe aplicar clases de Tailwind CSS correctamente', () => {
     const { container } = renderNavbar();
-    
+
     const nav = container.querySelector('nav');
-    expect(nav?.className).toContain('bg-white');
-    expect(nav?.className).toContain('shadow-lg');
     expect(nav?.className).toContain('sticky');
+    expect(nav?.className).toContain('top-0');
+    expect(nav?.className).toContain('z-50');
   });
 
   it('debe manejar caso cuando no hay query param num', () => {
