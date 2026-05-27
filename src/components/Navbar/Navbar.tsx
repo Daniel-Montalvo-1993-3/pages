@@ -21,24 +21,14 @@ export const Navbar: React.FC<NavbarProps> = ({ navItems }) => {
 
   return (
     <nav 
-      className="bg-white shadow-lg sticky top-0 z-50 border-b-2 border-gray-100"
+      className="sticky top-0 z-50"
       role="navigation"
       aria-label="Navegación principal"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo/Brand */}
-          <div className="flex-shrink-0">
-            <Link 
-              to="/pages/home?num=1"
-              className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
-            >
-              FormCard
-            </Link>
-          </div>
-
-          {/* Nav Items - Pills Style */}
-          <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-center h-16">
+          {/* Nav Items - Pills Style - Centrados */}
+          <div className="flex items-center gap-3 flex-wrap justify-center">
             {navItems.map(({ num, label }) => {
               const isActive = currentNum === num;
               
@@ -47,13 +37,13 @@ export const Navbar: React.FC<NavbarProps> = ({ navItems }) => {
                   key={num}
                   to={`/pages/home?num=${num}`}
                   className={`
-                    px-6 py-2.5 rounded-full font-semibold text-sm
+                    px-5 py-2 rounded-2xl font-semibold text-sm
                     transition-all duration-300 transform
-                    focus:outline-none focus:ring-2 focus:ring-purple-500/50
+                    focus:outline-none focus:ring-2 focus:ring-white/50
                     ${
                       isActive
-                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg scale-105'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gradient-to-r hover:from-purple-100 hover:to-pink-100 hover:text-purple-700 hover:shadow-md hover:scale-105'
+                        ? 'bg-white text-purple-600 shadow-lg scale-105'
+                        : 'bg-white text-gray-900 hover:bg-white/30 hover:shadow-md hover:scale-105'
                     }
                   `}
                   aria-current={isActive ? 'page' : undefined}
@@ -63,34 +53,6 @@ export const Navbar: React.FC<NavbarProps> = ({ navItems }) => {
               );
             })}
           </div>
-        </div>
-      </div>
-
-      {/* Mobile responsive version (opcional para mejora futura) */}
-      <div className="sm:hidden px-4 pb-3">
-        <div className="flex flex-col space-y-2">
-          {navItems.map(({ num, label }) => {
-            const isActive = currentNum === num;
-            
-            return (
-              <Link
-                key={`mobile-${num}`}
-                to={`/pages/home?num=${num}`}
-                className={`
-                  px-4 py-2 rounded-lg font-medium text-sm text-center
-                  transition-all duration-300
-                  ${
-                    isActive
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-purple-50'
-                  }
-                `}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                {label}
-              </Link>
-            );
-          })}
         </div>
       </div>
     </nav>

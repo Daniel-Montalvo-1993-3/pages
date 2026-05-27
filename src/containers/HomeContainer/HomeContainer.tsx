@@ -45,10 +45,6 @@ export const HomeContainer: React.FC = () => {
       {/* Contenido principal con z-index superior para estar sobre Vanta */}
       <div className="relative min-h-screen p-8 z-10">
         <div className="max-w-2xl mx-auto space-y-8">
-          <h1 className="text-4xl font-bold text-center text-white mb-8 drop-shadow-lg animate-in fade-in-up duration-500">
-            Formulario {num}
-          </h1>
-
         {/* Renderizar FormCard con la configuración seleccionada - key para forzar re-render en cambio de página */}
         <div key={num} className="animate-in fade-in-up duration-700">
           <FormCard
@@ -63,6 +59,15 @@ export const HomeContainer: React.FC = () => {
             inputType={config.inputType}
             logo={config.logo}
             illustration={config.illustration}
+            titleColor={config.titleColor}
+            descriptionColor={config.descriptionColor}
+            inputTextColor={config.inputTextColor}
+            inputPlaceholderColor={config.inputPlaceholderColor}
+            inputBackgroundColor={config.inputBackgroundColor}
+            inputBorderColor={config.inputBorderColor}
+            buttonColor={config.buttonColor}
+            buttonTextColor={config.buttonTextColor}
+            counterColor={config.counterColor}
             onButtonClick={handleFormSubmit}
           />
         </div>

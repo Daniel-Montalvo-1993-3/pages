@@ -88,7 +88,7 @@ describe('FormCard', () => {
     const illustration = screen.getByAltText('Illustration');
     expect(illustration).toBeInTheDocument();
     expect(illustration).toHaveAttribute('src', 'https://example.com/illustration.svg');
-    expect(illustration).toHaveClass('h-32', 'md:h-40', 'object-contain');
+    expect(illustration).toHaveClass('h-[300px]', 'object-contain');
   });
 
   it('no debe renderizar logo cuando no se proporciona', () => {

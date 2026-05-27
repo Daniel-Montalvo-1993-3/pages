@@ -25,6 +25,24 @@ interface FormCardProps {
   logo?: string;
   /** URL de la ilustración (se muestra antes del título) */
   illustration?: string;
+  /** Color del título (clases de Tailwind, ej: 'text-white' o 'text-gray-900') */
+  titleColor?: string;
+  /** Color de la descripción (clases de Tailwind) */
+  descriptionColor?: string;
+  /** Color del texto del input (clases de Tailwind) */
+  inputTextColor?: string;
+  /** Color del placeholder (clases de Tailwind) */
+  inputPlaceholderColor?: string;
+  /** Fondo del input (clases de Tailwind) */
+  inputBackgroundColor?: string;
+  /** Color del borde del input (clases de Tailwind) */
+  inputBorderColor?: string;
+  /** Color del botón (clases de Tailwind, ej: 'bg-blue-600 hover:bg-blue-700') */
+  buttonColor?: string;
+  /** Color del texto del botón (clases de Tailwind) */
+  buttonTextColor?: string;
+  /** Color del contador de caracteres (clases de Tailwind) */
+  counterColor?: string;
 }
 
 export const FormCard: React.FC<FormCardProps> = ({
@@ -40,6 +58,15 @@ export const FormCard: React.FC<FormCardProps> = ({
   inputType = 'text',
   logo,
   illustration,
+  titleColor = 'text-white',
+  descriptionColor = 'text-gray-200',
+  inputTextColor = 'text-white',
+  inputPlaceholderColor = 'placeholder-gray-400',
+  inputBackgroundColor = 'bg-white/10',
+  inputBorderColor = 'border-white/20',
+  buttonColor = 'bg-white hover:bg-gray-100',
+  buttonTextColor = 'text-gray-900',
+  counterColor = 'text-gray-300',
 }) => {
   const [inputValue, setInputValue] = useState('');
 
@@ -71,7 +98,7 @@ export const FormCard: React.FC<FormCardProps> = ({
   return (
     <div
       className={`
-        relative rounded-2xl p-8 shadow-xl
+        relative rounded-2xl p-8 py-12 shadow-xl
         min-h-[400px] flex flex-col justify-center
         ${getBackgroundStyle()}
       `}
@@ -79,7 +106,7 @@ export const FormCard: React.FC<FormCardProps> = ({
     >
       {/* Overlay para mejorar legibilidad cuando hay imagen de fondo */}
       {backgroundImage && (
-        <div className="absolute inset-0 bg-black/40 rounded-2xl" />
+        <div className="absolute inset-0 bg-black/30 rounded-2xl" />
       )}
 
       <div className="relative z-10 max-w-md mx-auto w-full">
@@ -89,7 +116,7 @@ export const FormCard: React.FC<FormCardProps> = ({
             <img 
               src={logo} 
               alt="Logo" 
-              className="h-8 md:h-10 object-contain"
+              className="h-10 md:h-16 object-contain"
               loading="lazy"
             />
           </div>
@@ -101,7 +128,7 @@ export const FormCard: React.FC<FormCardProps> = ({
             <img 
               src={illustration} 
               alt="Illustration" 
-              className="h-32 md:h-40 object-contain"
+              className="h-[250px] object-contain"
               loading="lazy"
             />
           </div>
@@ -112,7 +139,7 @@ export const FormCard: React.FC<FormCardProps> = ({
           <h2
             className={`
               text-3xl font-bold mb-4 text-center
-              ${backgroundImage ? 'text-white' : 'text-gray-900'}
+              ${titleColor}
             `}
           >
             {title}
@@ -124,7 +151,7 @@ export const FormCard: React.FC<FormCardProps> = ({
           <p
             className={`
               text-lg mb-6 text-center
-              ${backgroundImage ? 'text-gray-100' : 'text-gray-600'}
+              ${descriptionColor}
             `}
           >
             {description}
@@ -132,34 +159,35 @@ export const FormCard: React.FC<FormCardProps> = ({
         )}
 
         {/* Formulario */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="relative">
             <input
               type={inputType}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder={placeholder}
               maxLength={maxLength}
-              className="
-                w-full px-4 py-3 rounded-lg
-                bg-white/90 backdrop-blur-sm
-                border-2 border-gray-300
-                focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20
+              className={`
+                w-full px-0 py-3
+                bg-transparent
+                border-0 border-b-2
+                focus:border-white focus:ring-0
                 focus:outline-none
-                transition-all duration-200
-                text-gray-900 placeholder-gray-500
-              "
+                transition-all duration-300
+                ${inputBorderColor}
+                ${inputTextColor}
+                ${inputPlaceholderColor}
+              `}
               aria-label={placeholder}
             />
             {/* Contador de caracteres */}
-            <div className="mt-2 text-sm text-right">
+            <div className="mt-2 text-xs text-right">
               <span
                 className={`
-                  ${remainingChars < 10 ? 'text-red-500 font-semibold' : 'text-gray-500'}
-                  ${backgroundImage && remainingChars >= 10 ? 'text-white/80' : ''}
+                  ${remainingChars < 10 ? 'text-red-400 font-semibold' : counterColor}
                 `}
               >
-                {remainingChars} caracteres restantes
+                {remainingChars}
               </span>
             </div>
           </div>
@@ -168,17 +196,18 @@ export const FormCard: React.FC<FormCardProps> = ({
           <button
             type="submit"
             disabled={!inputValue.trim()}
-            className="
+            className={`
               w-full px-6 py-3 rounded-lg
-              bg-blue-600 hover:bg-blue-700
-              text-white font-medium
-              transition-all duration-200
+              font-semibold
+              transition-all duration-300
               disabled:opacity-50 disabled:cursor-not-allowed
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+              focus:outline-none focus:ring-2 focus:ring-white/50
               shadow-lg hover:shadow-xl
               transform hover:scale-[1.02]
               active:scale-[0.98]
-            "
+              ${buttonColor}
+              ${buttonTextColor}
+            `}
             aria-label={buttonText}
           >
             {buttonText}

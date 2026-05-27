@@ -31,6 +31,24 @@ export interface FormCardConfig {
   vantaColor?: number;
   /** Color de fondo de Vanta en formato hexadecimal (ej: 0x1e1b4b) */
   vantaBackgroundColor?: number;
+  /** Color del título (clases de Tailwind) */
+  titleColor?: string;
+  /** Color de la descripción (clases de Tailwind) */
+  descriptionColor?: string;
+  /** Color del texto del input (clases de Tailwind) */
+  inputTextColor?: string;
+  /** Color del placeholder (clases de Tailwind) */
+  inputPlaceholderColor?: string;
+  /** Fondo del input (clases de Tailwind) */
+  inputBackgroundColor?: string;
+  /** Color del borde del input (clases de Tailwind) */
+  inputBorderColor?: string;
+  /** Color del botón (clases de Tailwind) */
+  buttonColor?: string;
+  /** Color del texto del botón (clases de Tailwind) */
+  buttonTextColor?: string;
+  /** Color del contador de caracteres (clases de Tailwind) */
+  counterColor?: string;
 }
 
 /**
