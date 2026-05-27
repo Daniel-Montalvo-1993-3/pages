@@ -7,14 +7,18 @@ const mockToggleListening = vi.fn();
 const mockStopListening = vi.fn();
 let mockIsListening = false;
 let mockIsSupported = true;
+let capturedOnTranscript: ((value: string) => void) | null = null;
 
 vi.mock('../../hooks/useSpeechInput', () => ({
-  useSpeechInput: () => ({
-    isListening: mockIsListening,
-    isSupported: mockIsSupported,
-    toggleListening: mockToggleListening,
-    stopListening: mockStopListening,
-  }),
+  useSpeechInput: ({ onTranscript }: { onTranscript: (value: string) => void }) => {
+    capturedOnTranscript = onTranscript;
+    return {
+      isListening: mockIsListening,
+      isSupported: mockIsSupported,
+      toggleListening: mockToggleListening,
+      stopListening: mockStopListening,
+    };
+  },
 }));
 
 describe('FormCard', () => {
@@ -22,6 +26,7 @@ describe('FormCard', () => {
     vi.clearAllMocks();
     mockIsListening = false;
     mockIsSupported = true;
+    capturedOnTranscript = null;
   });
 
   it('detiene el micrófono al enviar el formulario si estaba escuchando', async () => {
@@ -39,7 +44,24 @@ describe('FormCard', () => {
     await user.click(submitBtn);
 
     expect(mockStopListening).toHaveBeenCalled();
-    expect(handleClick).toHaveBeenCalledWith('Test');
+    expect(handleClick).toHaveBeenCalledWith('Test', 'manual');
+  });
+
+  it('registra method voice cuando el input fue rellenado por dictado', async () => {
+    mockIsSupported = true;
+    const handleClick = vi.fn();
+    const user = userEvent.setup();
+
+    render(<FormCard onButtonClick={handleClick} />);
+
+    // Simular que el transcript de voz actualiza el input
+    const { act } = await import('@testing-library/react');
+    act(() => { capturedOnTranscript?.('Hola por voz'); });
+
+    const submitBtn = screen.getByRole('button', { name: /enviar/i });
+    await user.click(submitBtn);
+
+    expect(handleClick).toHaveBeenCalledWith('Hola por voz', 'voice');
   });
 
   it('renderiza correctamente con props por defecto', () => {
@@ -92,7 +114,7 @@ describe('FormCard', () => {
     const button = screen.getByRole('button', { name: /enviar/i });
     await user.click(button);
 
-    expect(handleClick).toHaveBeenCalledWith('John Doe');
+    expect(handleClick).toHaveBeenCalledWith('John Doe', 'manual');
   });
 
   it('deshabilita el botón cuando el input está vacío', () => {

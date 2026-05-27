@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FormCard } from '../../components/FormCard/FormCard';
 import { Modal } from '../../components/Modal/Modal';
 import { VantaBackground } from '../../components/VantaBackground/VantaBackground';
 import { useModal } from '../../hooks/useModal';
 import { formConfigs } from './formConfigs';
+import { pushDataLayerEvent, type InputMethod } from '../../utils/dataLayer';
 
 /**
  * Contenedor principal para la página Home
@@ -22,9 +23,16 @@ export const HomeContainer: React.FC = () => {
   // Obtener la configuración correspondiente, usar 'default' como fallback
   const config = formConfigs[num] || formConfigs['default'];
 
+  // Trackear carga de tema al cambiar de página por URL
+  useEffect(() => {
+    pushDataLayerEvent({ event: 'theme_loaded', num });
+  }, [num]);
+
   // Handler para cuando el usuario envía el formulario
-  const handleFormSubmit = (value: string) => {
+  const handleFormSubmit = (value: string, method: InputMethod) => {
     setUserName(value);
+    pushDataLayerEvent({ event: 'name_input', method });
+    pushDataLayerEvent({ event: 'name_displayed' });
     open();
   };
 

@@ -18,8 +18,8 @@ interface FormCardProps {
   maxLength?: number;
   /** Texto del botón */
   buttonText?: string;
-  /** Callback al hacer click en el botón con el valor del input */
-  onButtonClick?: (value: string) => void;
+  /** Callback al hacer click en el botón con el valor del input y el método de entrada */
+  onButtonClick?: (value: string, method: 'manual' | 'voice') => void;
   /** Tipo de input */
   inputType?: 'text' | 'email' | 'tel' | 'number';
   /** URL del logo (se muestra en la parte superior) */
@@ -73,9 +73,11 @@ export const FormCard: React.FC<FormCardProps> = ({
   micColor = 'text-white/60',
 }) => {
   const [inputValue, setInputValue] = useState('');
+  const [voiceUsed, setVoiceUsed] = useState(false);
 
   const handleInputChange = useCallback((value: string) => {
     setInputValue(value);
+    setVoiceUsed(true);
   }, []);
 
   const { isListening, isSupported, toggleListening, stopListening } = useSpeechInput({
@@ -87,7 +89,8 @@ export const FormCard: React.FC<FormCardProps> = ({
     e.preventDefault();
     if (onButtonClick && inputValue.trim()) {
       if (isListening) stopListening();
-      onButtonClick(inputValue);
+      onButtonClick(inputValue, voiceUsed ? 'voice' : 'manual');
+      setVoiceUsed(false);
     }
     setInputValue('');
   };

@@ -19,8 +19,8 @@ export interface FormCardConfig {
   maxLength?: number;
   /** Texto del botón */
   buttonText?: string;
-  /** Callback al hacer click en el botón con el valor del input */
-  onButtonClick?: (value: string) => void;
+  /** Callback al hacer click en el botón con el valor del input y el método de entrada */
+  onButtonClick?: (value: string, method: 'manual' | 'voice') => void;
   /** Tipo de input */
   inputType?: 'text' | 'email' | 'tel' | 'number';
   /** URL del logo (se muestra en la parte superior) */
