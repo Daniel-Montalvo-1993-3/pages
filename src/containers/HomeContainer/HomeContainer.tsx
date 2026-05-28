@@ -153,7 +153,7 @@ export const HomeContainer: React.FC = () => {
               {dataLayerSnapshot.map((entry, index) => {
                 const eventName = typeof entry.event === 'string' ? entry.event : '';
                 const colorClass = EVENT_COLORS[eventName] ?? 'text-gray-300';
-                const { event: _event, ...rest } = entry;
+                const rest = Object.fromEntries(Object.entries(entry).filter(([k]) => k !== 'event'));
                 return (
                   <li
                     key={index}
