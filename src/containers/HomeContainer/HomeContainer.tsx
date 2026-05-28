@@ -7,6 +7,14 @@ import { useModal } from '../../hooks/useModal';
 import { formConfigs } from './formConfigs';
 import { pushDataLayerEvent, type InputMethod } from '../../utils/dataLayer';
 
+/** Colores por tipo de evento para el visor de DataLayer */
+const EVENT_COLORS: Record<string, string> = {
+  theme_loaded: 'text-purple-400',
+  name_input: 'text-blue-400',
+  name_displayed: 'text-green-400',
+  datalayer_viewed: 'text-yellow-400',
+};
+
 /**
  * Contenedor principal para la página Home
  * Maneja la lógica de lectura de query params, selección de configuración,
@@ -15,7 +23,9 @@ import { pushDataLayerEvent, type InputMethod } from '../../utils/dataLayer';
 export const HomeContainer: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { isOpen, open, close } = useModal();
+  const { isOpen: isDataLayerOpen, open: openDataLayer, close: closeDataLayer } = useModal();
   const [userName, setUserName] = useState('');
+  const [dataLayerSnapshot, setDataLayerSnapshot] = useState<Record<string, unknown>[]>([]);
 
   // Obtener el parámetro 'num' de la URL, defaultear a '1'
   const num = searchParams.get('num') || '1';
@@ -34,6 +44,13 @@ export const HomeContainer: React.FC = () => {
     pushDataLayerEvent({ event: 'name_input', method });
     pushDataLayerEvent({ event: 'name_displayed' });
     open();
+  };
+
+  // Handler para abrir el visor de DataLayer
+  const handleOpenDataLayer = () => {
+    setDataLayerSnapshot([...(window.dataLayer ?? [])]);
+    pushDataLayerEvent({ event: 'datalayer_viewed' });
+    openDataLayer();
   };
 
   return (
@@ -97,6 +114,72 @@ export const HomeContainer: React.FC = () => {
         </Modal>
       </div>
     </div>
+
+      {/* Botón flotante para ver el DataLayer */}
+      <button
+        onClick={handleOpenDataLayer}
+        aria-label="Ver DataLayer"
+        className="
+          relative md:fixed bottom-5 right-0 md:right-6 z-20
+          flex items-center gap-2
+          px-4 py-2 rounded-full
+          bg-gray-900/80 backdrop-blur-sm
+          border border-purple-500/50
+          text-purple-300 text-sm font-mono font-semibold
+          shadow-lg shadow-purple-900/30
+          hover:bg-gray-800/90 hover:border-purple-400 hover:text-purple-200
+          transition-all duration-200
+          focus:outline-none focus:ring-2 focus:ring-purple-500
+        "
+      >
+        <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" aria-hidden="true" />
+        dataLayer flujo
+        <span className="
+          inline-flex items-center justify-center
+          w-5 h-5 rounded-full
+          bg-purple-500/30 text-purple-200 text-xs
+        ">
+          {(window.dataLayer ?? []).length}
+        </span>
+      </button>
+
+      {/* Modal visor de DataLayer */}
+      <Modal isOpen={isDataLayerOpen} onClose={closeDataLayer} title="window.dataLayer">
+        <div className="font-mono text-sm">
+          {dataLayerSnapshot.length === 0 ? (
+            <p className="text-gray-400 text-center py-4">No hay eventos registrados aún.</p>
+          ) : (
+            <ol className="space-y-2 max-h-96 overflow-y-auto pr-1">
+              {dataLayerSnapshot.map((entry, index) => {
+                const eventName = typeof entry.event === 'string' ? entry.event : '';
+                const colorClass = EVENT_COLORS[eventName] ?? 'text-gray-300';
+                const { event, ...rest } = entry;
+                return (
+                  <li
+                    key={index}
+                    className="flex gap-2 items-start rounded-lg bg-gray-50 px-3 py-2 border border-gray-200"
+                  >
+                    <span className="text-gray-400 select-none w-5 shrink-0 text-right">{index + 1}.</span>
+                    <div className="min-w-0">
+                      <span className={`font-bold ${colorClass}`}>{eventName}</span>
+                      {Object.keys(rest).length > 0 && (
+                        <span className="text-gray-500 ml-2">
+                          {Object.entries(rest).map(([k, v]) => (
+                            <span key={k} className="mr-2">
+                              <span className="text-gray-400">{k}:</span>{' '}
+                              <span className="text-indigo-600">{String(v)}</span>
+                            </span>
+                          ))}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+        </div>
+      </Modal>
     </>
   );
 };

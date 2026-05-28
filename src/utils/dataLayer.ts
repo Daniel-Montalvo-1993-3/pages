@@ -3,7 +3,8 @@ export type InputMethod = 'manual' | 'voice';
 type DataLayerEvent =
   | { event: 'name_input'; method: InputMethod }
   | { event: 'name_displayed' }
-  | { event: 'theme_loaded'; num: string };
+  | { event: 'theme_loaded'; num: string }
+  | { event: 'datalayer_viewed' };
 
 declare global {
   interface Window {

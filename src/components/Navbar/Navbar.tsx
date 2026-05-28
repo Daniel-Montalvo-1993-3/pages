@@ -21,7 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({ navItems }) => {
 
   return (
     <nav 
-      className="sticky top-0 z-50"
+      className="relative md:sticky top-0 z-50 pt-5 md-pt-0"
       role="navigation"
       aria-label="Navegación principal"
     >

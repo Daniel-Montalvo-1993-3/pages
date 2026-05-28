@@ -168,4 +168,67 @@ describe('HomeContainer', () => {
     renderHomeContainer('/pages/home?num=2');
     expect(screen.getByText('Contáctanos')).toBeInTheDocument();
   });
+
+  it('debe renderizar el botón flotante de dataLayer', () => {
+    renderHomeContainer();
+    expect(screen.getByRole('button', { name: /ver datalayer/i })).toBeInTheDocument();
+  });
+
+  it('debe abrir el modal del visor de dataLayer al hacer clic en el botón', async () => {
+    const user = userEvent.setup();
+    renderHomeContainer();
+
+    await user.click(screen.getByRole('button', { name: /ver datalayer/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('window.dataLayer')).toBeInTheDocument();
+    });
+  });
+
+  it('debe registrar el evento datalayer_viewed al abrir el visor', async () => {
+    const user = userEvent.setup();
+    renderHomeContainer();
+
+    await user.click(screen.getByRole('button', { name: /ver datalayer/i }));
+
+    await waitFor(() => {
+      expect(window.dataLayer).toContainEqual({ event: 'datalayer_viewed' });
+    });
+  });
+
+  it('debe mostrar los eventos acumulados dentro del modal del visor', async () => {
+    const user = userEvent.setup();
+    renderHomeContainer('/pages/home?num=1');
+
+    // Enviar formulario para acumular eventos
+    await user.type(screen.getByPlaceholderText('Tu nombre aquí...'), 'Carlos');
+    await user.click(screen.getByRole('button', { name: /continuar/i }));
+    await waitFor(() => expect(screen.getByText('¡Éxito!')).toBeInTheDocument());
+
+    // Cerrar modal de éxito y abrir el visor
+    await user.keyboard('{Escape}');
+    await waitFor(() => expect(screen.queryByText('¡Éxito!')).not.toBeInTheDocument());
+
+    await user.click(screen.getByRole('button', { name: /ver datalayer/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('window.dataLayer')).toBeInTheDocument();
+      expect(screen.getByText('name_input')).toBeInTheDocument();
+      expect(screen.getByText('name_displayed')).toBeInTheDocument();
+    });
+  });
+
+  it('debe mostrar mensaje vacío si no hay eventos en el visor', async () => {
+    const user = userEvent.setup();
+    window.dataLayer = [];
+    renderHomeContainer();
+
+    // Limpiar el dataLayer antes de abrir (simular estado limpio)
+    window.dataLayer = [];
+    await user.click(screen.getByRole('button', { name: /ver datalayer/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('No hay eventos registrados aún.')).toBeInTheDocument();
+    });
+  });
 });
