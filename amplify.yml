@@ -29,7 +29,7 @@ test:
       commands:
         # Ejecuta tests y genera reportes si es necesario
         - npm run test:run
-        - mkdir -p coverage
+        - mkdir -p coverage && echo "tests passed" > coverage/results.txt
   artifacts:
     baseDirectory: coverage
     files:
