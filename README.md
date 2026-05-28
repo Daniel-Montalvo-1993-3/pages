@@ -2,17 +2,24 @@
 
 Proyecto web moderno con React 19, Vite, TypeScript y Tailwind CSS siguiendo patrones de diseño profesionales.
 
-## ��� Stack Tecnológico
+# Ejecutar proyecto en local
+- descargar repositorio
+- en terminal ejecutar npm i 
+- y npm run dev para correrlo localmente
 
-- **React 19.2.6** + **TypeScript 6.0.2** + **Vite 8.0.12**
-- **React Router 7.15.1** - Enrutamiento y navegación
-- **Tailwind CSS 4.3.0** - Estilos utility-first
-- **Vitest 4.1.7** + **Testing Library** - Testing
-- **react-speech-recognition 4.0.1** - Dictado por voz
-- **Vanta.js 0.5.24** + **p5.js 1.4.0** - Fondo animado (vía CDN)
-- **ESLint** - Linting y calidad de código
+## ��� Stack Tecnológico
 
-## ��� Estructura del Proyecto
+| Tecnología | Decisión |
+|---|---|
+| React 19 + Vite | Ecosistema estándar; Vite ofrece HMR rápido y build optimizado sin configuración compleja |
+| TypeScript estricto | Elimina errores en runtime, autocompletado preciso, refactoring seguro |
+| Tailwind CSS | Estilos colocalizados con el componente, sin CSS files sueltos, purge automático en build |
+| React Router v7 | Routing declarativo; query params permiten compartir URLs con estado sin backend |
+| Vitest + Testing Library | Vitest corre en el mismo proceso que Vite (más rápido); Testing Library fuerza tests orientados al usuario |
+| react-speech-recognition | Abstrae la Web Speech API con soporte cross-browser y manejo de estado integrado | facil integración |
+| Vanta.js vía CDN | La librería es pesada; CDN con `defer` evita bloquear el parse del HTML y aprovecha cache del navegador |
+
+## ��� Estructura del Proyecto
 
 \`\`\`
 src/
@@ -40,23 +47,24 @@ src/
 ## ✨ Patrones de Diseño
 
 ### Presentational & Container Pattern
-- **Presentational**: Solo props y UI, sin lógica
-- **Container**: Maneja estado, efectos, llamadas API
+- **Presentacional**: Solo props y UI → fácil de testear y reutilizar sin dependencias externas
+- **Container**: Centraliza lógica → un solo lugar para cambiar comportamiento, los presentacionales no se tocan
 
 ### Custom Hooks
-- Encapsula lógica reutilizable
-- Separa concerns del componente
+- Saca la lógica del componente → el componente queda limpio, la lógica es testeable de forma aislada
+- Permite reusar la misma lógica en distintos componentes sin duplicar código
 
 ### Reglas de Código
-- ✅ TypeScript estricto (sin \`any\`)
-- ✅ Solo Tailwind CSS (no estilos inline)
-- ✅ Testing obligatorio para todo
-- ✅ Accesibilidad integrada
-- ✅ Actualizar README en cada cambio
+- **Sin `any`**: Los errores de tipo se detectan en compilación, no en producción
+- **Solo Tailwind**: Un único sistema de diseño, sin colisiones entre CSS files
+- **Testing obligatorio**: Previene regresiones; los tests documentan el comportamiento esperado
+- **Accesibilidad**: `aria-*` y semántica HTML5 por defecto, no como afterthought
 
-## ��� Sistema de Routing
+## ��� Sistema de Routing
 
-La aplicación usa **React Router v7** con query params para controlar qué configuración de FormCard se muestra:
+La aplicación usa **React Router v7** con query params para controlar qué configuración de FormCard se muestra.
+
+**¿Por qué query params y no rutas separadas?** Todas las páginas son el mismo componente con distinta configuración. Usar `?num=` evita duplicar rutas y componentes; el estado vive en la URL (compartible, navegable con Back/Forward).
 
 - **Ruta principal**: \`/\` redirige automáticamente a \`/pages/home?num=1\`
 - **Rutas dinámicas**: \`/pages/home?num=[1|2|3]\` muestra diferentes configuraciones
@@ -68,7 +76,7 @@ La aplicación usa **React Router v7** con query params para controlar qué conf
 2. Agrega nuevo item en el array \`navItems\` de \`PagesLayout.tsx\`
 3. ¡Listo! No se requiere modificar rutas ni lógica
 
-## ��� Dictado por Voz
+## ��� Dictado por Voz
 
 \`FormCard\` incluye un botón de micrófono usando la Web Speech API vía \`react-speech-recognition\`.
 
@@ -84,9 +92,13 @@ const { isListening, isSupported, toggleListening, stopListening } = useSpeechIn
 - Se detiene al enviar el formulario o navegar a otra página
 - Animación de pulso rojo mientras escucha
 
-## ��� Tracking con DataLayer
+## ��� Tracking con DataLayer
 
-Integración lista para Google Tag Manager vía \`window.dataLayer\`:
+Integración lista para Google Tag Manager vía `window.dataLayer`.
+
+**¿Por qué `dataLayer` y no un SDK de analytics directo?** `dataLayer` es el estándar de GTM: desacopla el código de la herramienta de analytics. Si el día de mañana se cambia GA4 por otro proveedor, el código de la app no cambia.
+
+**¿Por qué tipos discriminados?** Cada evento tiene propiedades distintas. Con union types TypeScript garantiza en compilación que `theme_loaded` siempre lleva `num`, y `name_input` siempre lleva `method`.
 
 | Evento | Cuándo | Propiedades |
 |---|---|---|
@@ -96,7 +108,7 @@ Integración lista para Google Tag Manager vía \`window.dataLayer\`:
 
 Verificar en DevTools: \`window.dataLayer\`
 
-## ��� Comandos
+## ��� Comandos
 
 \`\`\`bash
 npm run dev              # Servidor de desarrollo en http://localhost:5173
@@ -108,7 +120,7 @@ npm run test:coverage    # Reporte de cobertura
 npm run lint             # Ejecutar ESLint
 \`\`\`
 
-## ��� Instalación
+## ��� Instalación
 
 \`\`\`bash
 npm install
@@ -121,7 +133,7 @@ npm install
 - ✅ TypeScript 6.0.2
 - ✅ react-speech-recognition 4.0.1
 
-## ��� Historial
+## ��� Historial
 
 ### [27/05/2026] - DataLayer Tracking
 - ✅ \`src/utils/dataLayer.ts\` con tipos discriminados estrictos por evento
